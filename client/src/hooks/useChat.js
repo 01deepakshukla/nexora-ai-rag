@@ -12,26 +12,36 @@ export default function useChat() {
 
   async function sendMessage(content) {
     const trimmed = content.trim();
-    if (!trimmed || isTyping) return;
+
+    if (!trimmed || isTyping) {
+      return;
+    }
 
     setMessages((current) => [...current, { id: Date.now(), role: 'user', content: trimmed }]);
     setIsTyping(true);
 
-    /* Keep the conversation ID so later messages stay in the same thread. */
     try {
+      // Keep the same conversation thread until the user starts a new one.
       const response = await chatApi.sendMessage({ conversationId, content: trimmed });
       setConversationId(response.conversationId);
-      setMessages((current) => [...current, {
-        id: response.message._id,
-        role: response.message.role,
-        content: response.message.content,
-      }]);
+
+      setMessages((current) => [
+        ...current,
+        {
+          id: response.message._id,
+          role: response.message.role,
+          content: response.message.content,
+        },
+      ]);
     } catch (error) {
-      setMessages((current) => [...current, {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: `I could not complete that request.\n\nWhy: ${error.message}`,
-      }]);
+      setMessages((current) => [
+        ...current,
+        {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: `I could not complete that request.\n\nWhy: ${error.message}`,
+        },
+      ]);
     } finally {
       setIsTyping(false);
     }
@@ -44,3 +54,4 @@ export default function useChat() {
 
   return { messages, isTyping, sendMessage, newConversation };
 }
+

@@ -9,8 +9,30 @@ export default function App() {
   const [view, setView] = useState(savedUser ? 'chat' : 'login');
   const [user, setUser] = useState(savedUser);
 
-  if (view === 'login') return <Login onLogin={(nextUser) => { setUser(nextUser); setView('chat'); }} onRegister={() => setView('register')} />;
-  if (view === 'register') return <Register onRegister={(nextUser) => { setUser(nextUser); setView('chat'); }} onLogin={() => setView('login')} />;
+  const handleLogin = (nextUser) => {
+    setUser(nextUser);
+    setView('chat');
+  };
 
-  return <Chat user={user} onLogout={() => { authApi.logout(); setUser(null); setView('login'); }} />;
+  const handleRegister = (nextUser) => {
+    setUser(nextUser);
+    setView('chat');
+  };
+
+  const handleLogout = () => {
+    authApi.logout();
+    setUser(null);
+    setView('login');
+  };
+
+  if (view === 'login') {
+    return <Login onLogin={handleLogin} onRegister={() => setView('register')} />;
+  }
+
+  if (view === 'register') {
+    return <Register onRegister={handleRegister} onLogin={() => setView('login')} />;
+  }
+
+  return <Chat user={user} onLogout={handleLogout} />;
 }
+
