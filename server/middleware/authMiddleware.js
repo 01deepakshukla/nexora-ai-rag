@@ -10,7 +10,7 @@ function protect(req, res, next) {
   }
 
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET || 'development-secret');
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
     return next();
   } catch {
     return res.status(401).json({ message: 'Invalid or expired token.' });

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const tokenFor = (user) =>
-  jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || 'development-secret', {
+  jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
     expiresIn: '7d',
   });
 
