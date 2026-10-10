@@ -12,10 +12,16 @@ async function request(path, options = {}) {
     ...options,
   });
 
-  const data = await response.json().catch(() => ({}));
+  const responseText = await response.text();
+  let data = {};
+  try {
+    data = responseText ? JSON.parse(responseText) : {};
+  } catch {
+    // Keep non-JSON server responses available for useful HTTP errors below.
+  }
 
   if (!response.ok) {
-    throw new Error(data.message || 'Something went wrong');
+    throw new Error(data.message || `Request failed (${response.status} ${response.statusText}).`);
   }
 
   return data;

@@ -5,7 +5,14 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 
 export default function App() {
-  const savedUser = JSON.parse(localStorage.getItem('nexora_user') || 'null');
+const savedUser = (() => {
+  try {
+    const data = localStorage.getItem('nexora_user');
+    return data && data !== 'undefined' ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+})();
   const [view, setView] = useState(savedUser ? 'chat' : 'login');
   const [user, setUser] = useState(savedUser);
 
